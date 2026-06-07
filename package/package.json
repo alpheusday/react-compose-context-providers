@@ -41,5 +41,12 @@
     "types": "./dist/index.d.ts",
     "files": [
         "dist"
-    ]
+    ],
+    "devDependencies": {
+        "@types/react": "catalog:dev",
+        "react": "catalog:dev"
+    },
+    "peerDependencies": {
+        "react": "catalog:peer"
+    }
 }
