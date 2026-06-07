@@ -26,4 +26,6 @@ updates:
           prefix: "chore"
       ignore:
           - dependency-name: "@types/react"
+          - dependency-name: "@types/react-dom"
           - dependency-name: "react"
+          - dependency-name: "react-dom"
