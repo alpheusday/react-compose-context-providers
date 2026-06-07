@@ -8,14 +8,12 @@ import { ThemeContextProvider } from "./contexts/theme";
 
 const Providers: ProvidersComponent = withProviders([
     [
-        LocaleContextProvider,
-    ],
-    [
         ThemeContextProvider,
         {
             defaultMode: "dark",
         },
     ],
+    LocaleContextProvider,
 ]);
 
 type ComponentProps = {

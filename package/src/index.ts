@@ -18,32 +18,35 @@ type ComponentProps<C extends AnyComponent> = Omit<
  * and omit the `children` prop.
  */
 type ValidatedComponent<T> =
-    // Component + null
-    T extends [
-        infer C extends AnyComponent,
-    ]
-        ? [
-              C,
-          ]
-        : // Component + Props
+    // Component
+    T extends AnyComponent
+        ? T
+        : // [Component]
           T extends [
                 infer C extends AnyComponent,
-                infer P,
             ]
-          ? P extends ComponentProps<C>
-              ? // Valid: all props match the component's expected shape
-                T
-              : // Invalid: surface a type error by narrowing mismatched
-                // keys to never, so the user sees which props are invalid
-                [
-                    C,
-                    ComponentProps<C> & {
-                        [K in keyof P]: K extends keyof ComponentProps<C>
-                            ? ComponentProps<C>[K]
-                            : never;
-                    },
-                ]
-          : never;
+          ? [
+                C,
+            ]
+          : // [Component, Props]
+            T extends [
+                  infer C extends AnyComponent,
+                  infer P,
+              ]
+            ? P extends ComponentProps<C>
+                ? // Valid: all props match the component's expected shape
+                  T
+                : // Invalid: surface a type error by narrowing mismatched
+                  // keys to never, so the user sees which props are invalid
+                  [
+                      C,
+                      ComponentProps<C> & {
+                          [K in keyof P]: K extends keyof ComponentProps<C>
+                              ? ComponentProps<C>[K]
+                              : never;
+                      },
+                  ]
+            : never;
 
 /**
  * Validated providers.
@@ -91,6 +94,7 @@ type ProviderProps = {
  */
 const withProviders = <
     const T extends readonly (
+        | AnyComponent
         | [
               AnyComponent,
           ]
@@ -109,8 +113,26 @@ const withProviders = <
             (
                 acc: React.ReactNode,
                 entry: ValidatedProviders<T>[number],
-            ): React.ReactNode =>
-                React.createElement(entry[0], entry[1] ?? null, acc),
+            ): React.ReactNode => {
+                const normalized: [
+                    AnyComponent,
+                    Record<string, unknown> | undefined,
+                ] = Array.isArray(entry)
+                    ? [
+                          entry[0],
+                          entry[1],
+                      ]
+                    : [
+                          entry,
+                          void 0,
+                      ];
+
+                return React.createElement(
+                    normalized[0],
+                    normalized[1] ?? null,
+                    acc,
+                );
+            },
             props.children,
         );
     };

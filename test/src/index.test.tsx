@@ -222,4 +222,87 @@ describe("withProviders", (): void => {
 
         expect(screen.getByText("second")).toBeDefined();
     });
+
+    it("accepts a bare provider without array wrapper", (): void => {
+        const Passthrough: React.FC<{
+            children: React.ReactNode;
+        }> = ({ children }) => <>{children}</>;
+
+        const text = "bare" as const;
+
+        const Providers: ProvidersComponent = withProviders([
+            Passthrough,
+        ]);
+
+        const Component = (): React.JSX.Element => (
+            <Providers>
+                <span>{text}</span>
+            </Providers>
+        );
+
+        render(<Component />);
+
+        expect(screen.getByText(text)).toBeDefined();
+    });
+
+    it("mixes bare providers with providers that have props", (): void => {
+        const Passthrough: React.FC<{
+            children: React.ReactNode;
+        }> = ({ children }) => <>{children}</>;
+
+        const Providers: ProvidersComponent = withProviders([
+            Passthrough,
+            [
+                ThemeCtx.Provider,
+                {
+                    value: "dark",
+                },
+            ],
+        ]);
+
+        const text = "bare-mixed" as const;
+
+        const Display = (): React.JSX.Element => {
+            const theme: string = React.useContext(ThemeCtx);
+
+            return (
+                <span>
+                    {theme}-{text}
+                </span>
+            );
+        };
+
+        const Component = (): React.JSX.Element => (
+            <Providers>
+                <Display />
+            </Providers>
+        );
+
+        render(<Component />);
+
+        expect(screen.getByText(`dark-${text}`)).toBeDefined();
+    });
+
+    it("accepts a bare provider with optional props", (): void => {
+        const OptionalPassthrough: React.FC<{
+            children: React.ReactNode;
+            label?: string;
+        }> = ({ children }) => <>{children}</>;
+
+        const text = "optional" as const;
+
+        const Providers: ProvidersComponent = withProviders([
+            OptionalPassthrough,
+        ]);
+
+        const Component = (): React.JSX.Element => (
+            <Providers>
+                <span>{text}</span>
+            </Providers>
+        );
+
+        render(<Component />);
+
+        expect(screen.getByText(text)).toBeDefined();
+    });
 });
