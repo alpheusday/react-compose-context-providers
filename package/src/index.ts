@@ -17,27 +17,33 @@ type ComponentProps<C extends AnyComponent> = Omit<
  * Validate that the provider has the correct props,
  * and omit the `children` prop.
  */
-type ValidatedComponent<T> = T extends [
-    infer C extends AnyComponent,
-]
-    ? [
-          C,
-      ]
-    : T extends [
-            infer C extends AnyComponent,
-            infer P,
-        ]
-      ? P extends ComponentProps<C>
-          ? T
-          : [
-                C,
-                ComponentProps<C> & {
-                    [K in keyof P]: K extends keyof ComponentProps<C>
-                        ? ComponentProps<C>[K]
-                        : never;
-                },
+type ValidatedComponent<T> =
+    // Component + null
+    T extends [
+        infer C extends AnyComponent,
+    ]
+        ? [
+              C,
+          ]
+        : // Component + Props
+          T extends [
+                infer C extends AnyComponent,
+                infer P,
             ]
-      : never;
+          ? P extends ComponentProps<C>
+              ? // Valid: all props match the component's expected shape
+                T
+              : // Invalid: surface a type error by narrowing mismatched
+                // keys to never, so the user sees which props are invalid
+                [
+                    C,
+                    ComponentProps<C> & {
+                        [K in keyof P]: K extends keyof ComponentProps<C>
+                            ? ComponentProps<C>[K]
+                            : never;
+                    },
+                ]
+          : never;
 
 /**
  * Validated providers.
