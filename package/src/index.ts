@@ -67,28 +67,31 @@ type ProviderProps = {
  *
  * ### Example
  *
- * ```tsx
+ * ```ts
+ * import type * as React from "react";
  * import type { ProvidersComponent } from "react-compose-context-providers";
  *
- * import * as React from "react";
  * import { withProviders } from "react-compose-context-providers";
  *
- * type Theme = "system" | "light" | "dark";
- *
- * const ThemeCtx: React.Context<Theme> = React.createContext<Theme>("system");
+ * import { ThemeProvider } from "./contexts/theme";
+ * import { LocaleProvider } from "./contexts/locale";
  *
  * const Providers: ProvidersComponent = withProviders([
  *     [
- *         ThemeCtx.Provider,
+ *         ThemeProvider,
  *         {
- *             value: "light",
+ *             defaultTheme: "dark",
  *         },
- *     ]
+ *     ],
+ *     LocaleProvider,
  * ]);
  *
- * const Component = (): React.JSX.Element => {
- *     const theme: Theme = React.useContext(ThemeCtx);
- *     return <div>{theme}</div>;
+ * type ComponentProps = {
+ *     children: React.ReactNode;
+ * };
+ *
+ * const Component = (props: ComponentProps): React.JSX.Element => {
+ *     return <Providers>{props.children}</Providers>;
  * };
  * ```
  */
