@@ -1,12 +1,12 @@
 import type * as React from "react";
-import type { ProvidersComponent } from "react-compose-context-providers";
+import type { ComposedProviders } from "react-compose-context-providers";
 
-import { withProviders } from "react-compose-context-providers";
+import { composeProviders } from "react-compose-context-providers";
 
 import { LocaleContextProvider } from "./contexts/locale";
 import { ThemeContextProvider } from "./contexts/theme";
 
-const Providers: ProvidersComponent = withProviders([
+const Providers: ComposedProviders = composeProviders([
     [
         ThemeContextProvider,
         {

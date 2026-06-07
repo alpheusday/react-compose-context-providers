@@ -1,8 +1,8 @@
-import type { ProvidersComponent } from "react-compose-context-providers";
+import type { ComposedProviders } from "react-compose-context-providers";
 
 import { render, screen } from "@testing-library/react";
 import * as React from "react";
-import { withProviders } from "react-compose-context-providers";
+import { composeProviders } from "react-compose-context-providers";
 import { describe, expect, it } from "vitest";
 
 type Theme = "light" | "dark";
@@ -15,11 +15,11 @@ const I18nCtx: React.Context<I18n> = React.createContext<I18n>("en");
 
 const AuthCtx: React.Context<boolean> = React.createContext<boolean>(false);
 
-describe("withProviders", (): void => {
+describe("composeProviders", (): void => {
     it("returns children unchanged when no providers are given", (): void => {
         const text = "Hello, World!" as const;
 
-        const Providers: ProvidersComponent = withProviders([]);
+        const Providers: ComposedProviders = composeProviders([]);
 
         const Component = (): React.JSX.Element => (
             <Providers>
@@ -33,7 +33,7 @@ describe("withProviders", (): void => {
     });
 
     it("wraps children with a single provider", (): void => {
-        const Providers: ProvidersComponent = withProviders([
+        const Providers: ComposedProviders = composeProviders([
             [
                 ThemeCtx.Provider,
                 {
@@ -60,7 +60,7 @@ describe("withProviders", (): void => {
     });
 
     it("nests providers so that the first element is outermost", (): void => {
-        const Providers: ProvidersComponent = withProviders([
+        const Providers: ComposedProviders = composeProviders([
             [
                 ThemeCtx.Provider,
                 {
@@ -99,7 +99,7 @@ describe("withProviders", (): void => {
     });
 
     it("propagates context through three nested providers", (): void => {
-        const Providers: ProvidersComponent = withProviders([
+        const Providers: ComposedProviders = composeProviders([
             [
                 ThemeCtx.Provider,
                 {
@@ -152,7 +152,7 @@ describe("withProviders", (): void => {
             children: React.ReactNode;
         }> = ({ children }) => <>{children}</>;
 
-        const Providers: ProvidersComponent = withProviders([
+        const Providers: ComposedProviders = composeProviders([
             [
                 Passthrough,
             ],
@@ -186,7 +186,7 @@ describe("withProviders", (): void => {
             value: string;
         }> = Tracker.Provider;
 
-        const Providers: ProvidersComponent = withProviders([
+        const Providers: ComposedProviders = composeProviders([
             [
                 Wrapper,
                 {
@@ -230,7 +230,7 @@ describe("withProviders", (): void => {
 
         const text = "bare" as const;
 
-        const Providers: ProvidersComponent = withProviders([
+        const Providers: ComposedProviders = composeProviders([
             Passthrough,
         ]);
 
@@ -250,7 +250,7 @@ describe("withProviders", (): void => {
             children: React.ReactNode;
         }> = ({ children }) => <>{children}</>;
 
-        const Providers: ProvidersComponent = withProviders([
+        const Providers: ComposedProviders = composeProviders([
             Passthrough,
             [
                 ThemeCtx.Provider,
@@ -291,7 +291,7 @@ describe("withProviders", (): void => {
 
         const text = "optional" as const;
 
-        const Providers: ProvidersComponent = withProviders([
+        const Providers: ComposedProviders = composeProviders([
             OptionalPassthrough,
         ]);
 

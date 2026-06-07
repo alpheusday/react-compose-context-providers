@@ -1,66 +1,71 @@
 import * as React from "react";
 
 /**
- * Any React component.
+ * Provider component type.
  */
-type AnyComponent = React.ComponentType<any>;
+type ProviderComponent = React.ComponentType<any>;
 
 /**
- * React component props without the `children` prop.
+ * Provider component props without the `children` prop.
  */
-type ComponentProps<C extends AnyComponent> = Omit<
+type ProviderProps<C extends ProviderComponent> = Omit<
     React.ComponentProps<C>,
     "children"
 >;
 
 /**
- * Validate that the provider has the correct props,
- * and omit the `children` prop.
+ * A provider entry: either a component, [Component], or [Component, Props].
+ * Validates props against the component and omits the `children` prop.
  */
-type ValidatedComponent<T> =
+type ProviderEntry<T> =
     // Component
-    T extends AnyComponent
+    T extends ProviderComponent
         ? T
         : // [Component]
           T extends [
-                infer C extends AnyComponent,
+                infer C extends ProviderComponent,
             ]
           ? [
                 C,
             ]
           : // [Component, Props]
             T extends [
-                  infer C extends AnyComponent,
+                  infer C extends ProviderComponent,
                   infer P,
               ]
-            ? P extends ComponentProps<C>
+            ? P extends ProviderProps<C>
                 ? // Valid: all props match the component's expected shape
                   T
                 : // Invalid: surface a type error by narrowing mismatched
                   // keys to never, so the user sees which props are invalid
                   [
                       C,
-                      ComponentProps<C> & {
-                          [K in keyof P]: K extends keyof ComponentProps<C>
-                              ? ComponentProps<C>[K]
+                      ProviderProps<C> & {
+                          [K in keyof P]: K extends keyof ProviderProps<C>
+                              ? ProviderProps<C>[K]
                               : never;
                       },
                   ]
             : never;
 
 /**
- * Validated providers.
+ * A provider entries tuple with validated props.
  */
-type ValidatedProviders<T> = {
-    [K in keyof T]: ValidatedComponent<T[K]>;
+type ProviderEntries<T> = {
+    [K in keyof T]: ProviderEntry<T[K]>;
 };
 
 /**
- * `Providers` component props.
+ * Props for the composed providers component.
  */
-type ProviderProps = {
+type ComposedProvidersProps = {
     children?: React.ReactNode;
 };
+
+/**
+ * The composed providers component.
+ */
+type ComposedProviders = (props: ComposedProvidersProps) => React.ReactNode;
 
 /**
  * Create a `Providers` component with the given providers.
@@ -69,14 +74,14 @@ type ProviderProps = {
  *
  * ```ts
  * import type * as React from "react";
- * import type { ProvidersComponent } from "react-compose-context-providers";
+ * import type { ComposedProviders } from "react-compose-context-providers";
  *
- * import { withProviders } from "react-compose-context-providers";
+ * import { composeProviders } from "react-compose-context-providers";
  *
  * import { ThemeProvider } from "./contexts/theme";
  * import { LocaleProvider } from "./contexts/locale";
  *
- * const Providers: ProvidersComponent = withProviders([
+ * const Providers: ComposedProviders = composeProviders([
  *     [
  *         ThemeProvider,
  *         {
@@ -95,30 +100,30 @@ type ProviderProps = {
  * };
  * ```
  */
-const withProviders = <
+const composeProviders = <
     const T extends readonly (
-        | AnyComponent
+        | ProviderComponent
         | [
-              AnyComponent,
+              ProviderComponent,
           ]
         | [
-              AnyComponent,
+              ProviderComponent,
               Record<string, unknown>,
           ]
     )[],
 >(
     providers: [
-        ...ValidatedProviders<T>,
+        ...ProviderEntries<T>,
     ],
-): ((props: ProviderProps) => React.ReactNode) => {
-    return (props: ProviderProps): React.ReactNode => {
+): ComposedProviders => {
+    return (props: ComposedProvidersProps): React.ReactNode => {
         return providers.reduceRight(
             (
                 acc: React.ReactNode,
-                entry: ValidatedProviders<T>[number],
+                entry: ProviderEntries<T>[number],
             ): React.ReactNode => {
                 const normalized: [
-                    AnyComponent,
+                    ProviderComponent,
                     Record<string, unknown> | undefined,
                 ] = Array.isArray(entry)
                     ? [
@@ -141,17 +146,12 @@ const withProviders = <
     };
 };
 
-/**
- * The `Providers` component.
- */
-type ProvidersComponent = ReturnType<typeof withProviders>;
-
 export type {
-    AnyComponent,
-    ComponentProps,
+    ComposedProviders,
+    ComposedProvidersProps,
+    ProviderComponent,
+    ProviderEntries,
+    ProviderEntry,
     ProviderProps,
-    ProvidersComponent,
-    ValidatedComponent,
-    ValidatedProviders,
 };
-export { withProviders };
+export { composeProviders };
