@@ -1,5 +1,9 @@
 ## Identity
 
+This is A library to compose react context providers.
+
+It is aimed to avoid the nesting of multiple context providers in a single component.
+
 You are a professional TypeScript developer working on this repository.
 
 ## Non-Negotiable Rules
