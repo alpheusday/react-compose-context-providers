@@ -40,6 +40,13 @@ type ValidatedComponent<T> = T extends [
       : never;
 
 /**
+ * Validated providers.
+ */
+type ValidatedProviders<T> = {
+    [K in keyof T]: ValidatedComponent<T[K]>;
+};
+
+/**
  * `Providers` component props.
  */
 type ProviderProps = {
@@ -88,14 +95,15 @@ const withProviders = <
     )[],
 >(
     providers: [
-        ...{
-            [K in keyof T]: ValidatedComponent<T[K]>;
-        },
+        ...ValidatedProviders<T>,
     ],
 ): ((props: ProviderProps) => React.ReactNode) => {
     return (props: ProviderProps): React.ReactNode => {
         return providers.reduceRight(
-            (acc, entry) =>
+            (
+                acc: React.ReactNode,
+                entry: ValidatedProviders<T>[number],
+            ): React.ReactNode =>
                 React.createElement(entry[0], entry[1] ?? null, acc),
             props.children,
         );
@@ -113,5 +121,6 @@ export type {
     ProviderProps,
     ProvidersComponent,
     ValidatedComponent,
+    ValidatedProviders,
 };
 export { withProviders };
