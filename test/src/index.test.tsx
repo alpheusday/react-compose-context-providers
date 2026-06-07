@@ -5,9 +5,13 @@ import * as React from "react";
 import { withProviders } from "react-compose-context-providers";
 import { describe, expect, it } from "vitest";
 
-const ThemeCtx: React.Context<string> = React.createContext<string>("light");
+type Theme = "light" | "dark";
 
-const I18nCtx: React.Context<string> = React.createContext<string>("en");
+const ThemeCtx: React.Context<Theme> = React.createContext<Theme>("light");
+
+type I18n = "en" | "fr" | "ja";
+
+const I18nCtx: React.Context<I18n> = React.createContext<I18n>("en");
 
 const AuthCtx: React.Context<boolean> = React.createContext<boolean>(false);
 
