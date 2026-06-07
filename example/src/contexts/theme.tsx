@@ -12,13 +12,13 @@ type ThemeContextType = {
 
 const ThemeContext = React.createContext<ThemeContextType | null>(null);
 
-type LocaleContextProviderProps = {
+type ThemeContextProviderProps = {
     defaultMode?: ThemeMode;
     children?: React.ReactNode;
 };
 
 const ThemeContextProvider = (
-    props: LocaleContextProviderProps,
+    props: ThemeContextProviderProps,
 ): React.JSX.Element => {
     const [theme, setTheme] = React.useState<Theme>("light");
     const [mode, setMode] = React.useState<ThemeMode>(
@@ -64,5 +64,5 @@ const useThemeContext = (): ThemeContextType => {
     return context;
 };
 
-export type { LocaleContextProviderProps, Theme, ThemeContextType, ThemeMode };
+export type { Theme, ThemeContextProviderProps, ThemeContextType, ThemeMode };
 export { ThemeContextProvider, useThemeContext };
