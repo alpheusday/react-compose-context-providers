@@ -43,7 +43,7 @@ type ValidatedComponent<T> = T extends [
  * `Providers` component props.
  */
 type ProviderProps = {
-    children: React.JSX.Element;
+    children?: React.ReactNode;
 };
 
 /**
@@ -92,8 +92,8 @@ const withProviders = <
             [K in keyof T]: ValidatedComponent<T[K]>;
         },
     ],
-): ((props: ProviderProps) => React.ReactElement) => {
-    return (props: ProviderProps): React.ReactElement => {
+): ((props: ProviderProps) => React.ReactNode) => {
+    return (props: ProviderProps): React.ReactNode => {
         return providers.reduceRight(
             (acc, entry) =>
                 React.createElement(entry[0], entry[1] ?? null, acc),
