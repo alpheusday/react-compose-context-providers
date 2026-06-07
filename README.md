@@ -23,6 +23,38 @@ deno add npm:react-compose-context-providers
 bun add react-compose-context-providers
 ```
 
+## Usage
+
+Use the `composeProviders` function from the package to avoid nesting hell:
+
+```tsx
+import type * as React from "react";
+import { ComposedProviders } from "react-compose-context-providers";
+
+import { composeProviders } from "react-compose-context-providers";
+
+import { ThemeProvider } from "./contexts/theme";
+import { LocaleProvider } from "./contexts/locale";
+
+const Providers: ComposedProviders = composeProviders([
+    [
+        ThemeProvider,
+        {
+            defaultTheme: "dark",
+        },
+    ],
+    LocaleProvider,
+]);
+
+type ComponentProps = {
+    children: React.ReactNode;
+};
+
+const Component = (props: ComponentProps): React.JSX.Element => {
+    return <Providers>{props.children}</Providers>;
+};
+```
+
 ## Contributing
 
 For contributing, please refer to the [contributing guide](./CONTRIBUTING.md).
