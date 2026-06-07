@@ -1,0 +1,13 @@
+{
+    "private": true,
+    "scripts": {
+        "build": "tsdown -c tsdown.config.ts"
+    },
+    "dependencies": {
+        "react": "catalog:dev",
+        "react-compose-context-providers": "workspace:*"
+    },
+    "devDependencies": {
+        "@types/react": "catalog:dev"
+    }
+}

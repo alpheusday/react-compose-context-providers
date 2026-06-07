@@ -43,6 +43,19 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
+  example:
+    dependencies:
+      react:
+        specifier: catalog:dev
+        version: 18.0.0
+      react-compose-context-providers:
+        specifier: workspace:*
+        version: link:../package
+    devDependencies:
+      '@types/react':
+        specifier: catalog:dev
+        version: 18.3.31
+
   package:
     devDependencies:
       '@types/react':
