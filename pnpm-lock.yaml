@@ -74,8 +74,8 @@ importers:
         specifier: ^16.3.3
         version: 16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.0.0(react@18.0.0))(react@18.0.0)
       happy-dom:
-        specifier: ^20.12.1
-        version: 20.12.1
+        specifier: ^20.13.2
+        version: 20.13.2
       react:
         specifier: catalog:dev
         version: 18.0.0
@@ -84,7 +84,7 @@ importers:
         version: link:../package
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@26.4.1)(happy-dom@20.12.1)
+        version: 4.1.11(@types/node@26.4.1)(happy-dom@20.13.2)
     devDependencies:
       '@types/react':
         specifier: catalog:dev
@@ -731,8 +731,8 @@ packages:
   globrex@0.1.2:
     resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
 
-  happy-dom@20.12.1:
-    resolution: {integrity: sha512-6+Gaa3xVS+OwQy3fAZGMqFO3sffpTrL/gW3bkOGzN50YN5zWPp6gUyQXITJ1n0xBGeZrJMQ9scBW7Q9aWjUAJw==}
+  happy-dom@20.13.2:
+    resolution: {integrity: sha512-VC9HoEaT3Jf3K/1g/GjMYGAZCCg+ULgGVcXJlAeSzdTj8mIoPJRp14KVclP5gpUcF/kauuaVB2ri2/WxXbl4vg==}
     engines: {node: '>=20.0.0'}
 
   hookable@6.1.1:
@@ -1548,7 +1548,7 @@ snapshots:
 
   globrex@0.1.2: {}
 
-  happy-dom@20.12.1:
+  happy-dom@20.13.2:
     dependencies:
       '@types/node': 26.4.1
       '@types/whatwg-mimetype': 3.0.2
@@ -1812,7 +1812,7 @@ snapshots:
       '@types/node': 26.4.1
       fsevents: 2.3.3
 
-  vitest@4.1.11(@types/node@26.4.1)(happy-dom@20.12.1):
+  vitest@4.1.11(@types/node@26.4.1)(happy-dom@20.13.2):
     dependencies:
       '@vitest/expect': 4.1.11
       '@vitest/mocker': 4.1.11(vite@8.2.1(@types/node@26.4.1))
@@ -1836,7 +1836,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 26.4.1
-      happy-dom: 20.12.1
+      happy-dom: 20.13.2
     transitivePeerDependencies:
       - '@vitejs/devtools'
       - esbuild
