@@ -4,127 +4,90 @@ This is A library to compose react context providers.
 
 It is aimed to avoid the nesting of multiple context providers in a single component.
 
-You are a professional TypeScript developer working on this repository.
-
-## Non-Negotiable Rules
-
-- Do not hallucinate.
-- Do not invent APIs, files, or behavior.
-- Do not assume features that are not present in the repository.
-- Do not introduce new dependencies unless explicitly requested.
-- Preserve existing code style.
-- Preserve file and directory structure.
-
 ## Architecture
 
 This repository is a pnpm workspace.
 
-### Core
+| Path      | Description        |
+| --------- | ------------------ |
+| `package` | The library itself |
+| `test`    | The test           |
 
-- `package` - The library itself
-
-### Tests
-
-- `test` - The test
+Do not introduce circular dependencies.
 
 ## Code Standards
 
-Language:
+### Languages
 
-- TypeScript only.
-- No `any` unless unavoidable.
-- All variables must have explicit types.
-- All exported APIs must have explicit types.
+- use explicit types for variables
+- use explicit types for exported APIs
+- avoid `any` unless there is a concrete and documented reason
 
-Style:
+### General
 
-- Functional programming only.
-- No classes unless the codebase already uses one in that exact location.
-- No OOP abstractions.
-- No mutation unless required.
-- Prefer pure functions.
-- Prefer small composable utilities.
+- preserve the surrounding code style
+- reuse existing utilities and abstractions before introducing new ones
 
 ## Editing Rules
 
 When modifying code:
 
-- Prefer minimal diffs.
-- Do not refactor unrelated code.
-- Do not rename files or symbols unless they are incorrect.
-- If behavior changes, update tests accordingly.
-- Never change public API semantics without explicit instruction.
+- always ask before changing public API semantics
+- if behavior changes, update tests accordingly
 
 If uncertain about intended behavior:
 
-- Prefer reading tests as source of truth.
-- Do not guess.
+- ask directly, do not guess
+- prefer reading tests as source of truth
 
 ## Testing Rules
 
-- Do not delete failing tests to fix errors.
-- Do not weaken assertions.
-- Add tests when adding new behavior.
-- Keep test style consistent with existing tests.
+- add tests when adding new behavior
+- update tests when behavior changes
+- keep test style consistent with nearby tests
 
-## Performance
+### Integrity
 
-- Avoid runtime allocations inside hot paths.
-- Avoid unnecessary object cloning.
-- Avoid non-deterministic behavior.
-- Ensure stable output ordering where relevant.
-- Compiler output must be deterministic.
+- do not delete failing test to make the suite pass
+- do not weaken assertions to make the suite pass
+- do not change expected output without understanding why the behavior changed
+- do not remove coverage because the implementation is difficult to test
 
-## Tooling
+If an existing test fails after a change, determine whether:
 
-The project uses:
+1. the implementation is incorrect, or
+2. the expected behavior intentionally changed
+
+Only update the test in the second case.
+
+## Tooling and Workflow
+
+The repository uses:
 
 - Node.js
-- pnpm (workspace)
-- just (task runner)
+- pnpm
+- just
 - ls-lint
 - typos-cli
 
-Always prefer `just` commands.
+`just` is the preferred task runner over the lower-level tools.
 
-Never run raw `pnpm` unless explicitly required.
-
-## Commands
-
-Install dependencies:
+Before running an task, inspect the available commands:
 
 ```sh
-just i
-```
-
-Format:
-
-```sh
-just fmt
-```
-
-Lint:
-
-```sh
-just lint
-```
-
-Build:
-
-```sh
-just build
-```
-
-Test:
-
-```sh
-just test
+just
 ```
 
 ## What NOT to Do
 
-- Do not migrate tooling.
-- Do not introduce frameworks.
-- Do not add config files unless explicitly requested.
-- Do not add formatting rules.
-- Do not silently change build behavior.
+- invent APIs, files, modules, or behavior
+- assume unsupported features exist
+- violate dependency boundaries
+- introduce circular dependencies
+- add unnecessary dependencies
+- refactor unrelated code during a focuesd change
+- modify generated artifacts directly when a generation workflow exists
+- migrate tooling without an explicit requirement
+- intoruce a second package manager
+- introduce unnecessary mutation
+- commit or push Git changes unless explicitly requested
