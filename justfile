@@ -31,8 +31,7 @@ ls-lint:
     cd ./{{pkg}}/src && ls-lint -config ../../.ls-lint.yaml
 
 # Lint code with ls-lint
-lslint:
-    just ls-lint
+lslint: ls-lint
 
 # Lint code with typos-cli
 typos:
@@ -43,10 +42,7 @@ tsc:
     cd ./{{pkg}} && {{tsc}} --noEmit
 
 # Lint code
-lint:
-    just lslint
-    just typos
-    just tsc
+lint: lslint typos tsc
 
 # Lint code with Biome
 lint-biome:
@@ -61,11 +57,7 @@ test:
     cd ./{{tst}} && {{vitest}} run
 
 # Check code
-check:
-    just fmt
-    just lint
-    just build
-    just test
+check: fmt lint build test
 
 # Publish package with dev tag as dry-run
 publish-dev-try:
@@ -88,8 +80,7 @@ clean-linux:
     rm -rf ./{{pkg}}/dist
 
 # Clean builds (macOS)
-clean-macos:
-    just clean-linux
+clean-macos: clean-linux
 
 # Clean builds (Windows)
 clean-windows:
@@ -110,8 +101,7 @@ clean-all-linux:
     rm -rf ./node_modules
 
 # Clean everything (macOS)
-clean-all-macos:
-    just clean-all-linux
+clean-all-macos: clean-all-linux
 
 # Clean everything (Windows)
 clean-all-windows:
