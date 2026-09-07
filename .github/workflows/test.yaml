@@ -34,7 +34,7 @@ jobs:
               uses: alpheusci/setup-node@v1
 
             - name: Build packages
-              run: just build
+              run: just build && just build-test
 
             - name: Run tests
               run: just test
