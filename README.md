@@ -29,7 +29,7 @@ Use the `composeProviders` function from the package to avoid nesting hell:
 
 ```tsx
 import type * as React from "react";
-import { ComposedProviders } from "react-compose-context-providers";
+import type { ComposedProviders } from "react-compose-context-providers";
 
 import { composeProviders } from "react-compose-context-providers";
 
