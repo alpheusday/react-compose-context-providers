@@ -1,0 +1,23 @@
+{
+    "name": "@apst/test-helpers",
+    "private": true,
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "dependencies": {
+        "@testing-library/dom": "catalog:test",
+        "@testing-library/react": "catalog:test",
+        "react": "catalog:react18",
+        "react-compose-context-providers": "workspace:*",
+        "react-dom": "catalog:react18",
+        "vitest": "catalog:test"
+    },
+    "devDependencies": {
+        "@types/react": "catalog:react18",
+        "@types/react-dom": "catalog:react18"
+    }
+}

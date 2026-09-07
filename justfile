@@ -12,7 +12,9 @@ publish := "pnpm publish --access public"
 
 pkg := "package"
 
-tst := "test"
+test_helpers := "tests/helpers"
+test_18 := "tests/react18"
+test_19 := "tests/react19"
 
 # Default action
 _:
@@ -40,6 +42,8 @@ typos:
 # Lint code with TypeScript Compiler
 tsc:
     cd ./{{pkg}} && {{tsc}} --noEmit
+    cd ./{{test_18}} && {{tsc}} --noEmit
+    cd ./{{test_19}} && {{tsc}} --noEmit
 
 # Lint code
 lint: lslint typos tsc
@@ -52,12 +56,23 @@ lint-biome:
 build:
     cd ./{{pkg}} && {{tsdown}} -c tsdown.config.ts
 
+# Build package for test
+build-test:
+    cd ./{{test_helpers}} && {{tsdown}} -c tsdown.config.ts
+
+# Test package against React 18 only
+test-18: build-test build
+    cd ./{{test_18}} && {{vitest}} run
+
+# Test package against React 19 only
+test-19: build-test build
+    cd ./{{test_19}} && {{vitest}} run
+
 # Test package
-test:
-    cd ./{{tst}} && {{vitest}} run
+test: test-18 test-19
 
 # Check code
-check: fmt lint build test
+check: fmt build build-test lint test
 
 # Publish package with dev tag as dry-run
 publish-dev-try:
@@ -78,6 +93,7 @@ publish:
 # Clean builds (Linux)
 clean-linux:
     rm -rf ./{{pkg}}/dist
+    rm -rf ./{{test_helpers}}/dist
 
 # Clean builds (macOS)
 clean-macos: clean-linux
@@ -85,6 +101,7 @@ clean-macos: clean-linux
 # Clean builds (Windows)
 clean-windows:
     if (Test-Path "./{{pkg}}/dist") { Remove-Item -Recurse -Force "./{{pkg}}/dist" }
+    if (Test-Path "./{{test_helpers}}/dist") { Remove-Item -Recurse -Force "./{{test_helpers}}/dist" }
 
 # Clean builds
 clean:
@@ -94,7 +111,9 @@ clean:
 clean-all-linux:
     just clean
 
-    rm -rf ./{{tst}}/node_modules
+    rm -rf ./{{test_18}}/node_modules
+    rm -rf ./{{test_19}}/node_modules
+    rm -rf ./{{test_helpers}}/node_modules
 
     rm -rf ./{{pkg}}/node_modules
 
@@ -107,7 +126,9 @@ clean-all-macos: clean-all-linux
 clean-all-windows:
     just clean
 
-    if (Test-Path "./{{tst}}/node_modules") { Remove-Item -Recurse -Force "./{{tst}}/node_modules" }
+    if (Test-Path "./{{test_18}}/node_modules") { Remove-Item -Recurse -Force "./{{test_18}}/node_modules" }
+    if (Test-Path "./{{test_19}}/node_modules") { Remove-Item -Recurse -Force "./{{test_19}}/node_modules" }
+    if (Test-Path "./{{test_helpers}}/node_modules") { Remove-Item -Recurse -Force "./{{test_helpers}}/node_modules" }
 
     if (Test-Path "./{{pkg}}/node_modules") { Remove-Item -Recurse -Force "./{{pkg}}/node_modules" }
 

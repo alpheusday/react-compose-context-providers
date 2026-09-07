@@ -1,0 +1,17 @@
+{
+    "private": true,
+    "type": "module",
+    "dependencies": {
+        "@apst/test-helpers": "workspace:*",
+        "happy-dom": "catalog:test",
+        "react": "catalog:react18",
+        "vitest": "catalog:test"
+    },
+    "devDependencies": {
+        "@testing-library/dom": "catalog:test",
+        "@testing-library/react": "catalog:test",
+        "@types/react": "catalog:react18",
+        "@types/react-dom": "catalog:react18",
+        "react-dom": "catalog:react18"
+    }
+}
