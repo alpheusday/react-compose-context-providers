@@ -6,7 +6,7 @@
         "happy-dom": "^20.13.2",
         "react": "catalog:dev",
         "react-compose-context-providers": "workspace:*",
-        "vitest": "^4.1.11"
+        "vitest": "^5.0.0"
     },
     "devDependencies": {
         "@types/react": "catalog:dev",
