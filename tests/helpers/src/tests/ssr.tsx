@@ -3,49 +3,10 @@ import { composeProviders } from "react-compose-context-providers";
 import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { AuthCtx, I18nCtx, ThemeCtx } from "../contexts";
+import { AuthCtx, I18nCtx, ThemeCtx } from "#/contexts";
 
 const defineTestsSSR = (): void => {
     describe("composeProviders SSR", (): void => {
-        it("renders provider-fed values with renderToString", (): void => {
-            const Providers = composeProviders([
-                [
-                    ThemeCtx.Provider,
-                    {
-                        value: "dark",
-                    },
-                ],
-                [
-                    I18nCtx.Provider,
-                    {
-                        value: "fr",
-                    },
-                ],
-            ]);
-
-            const Display = (): React.JSX.Element => {
-                const theme: string = React.useContext(ThemeCtx);
-
-                const i18n: string = React.useContext(I18nCtx);
-
-                return (
-                    <span>
-                        {theme}-{i18n}
-                    </span>
-                );
-            };
-
-            const Component = (): React.JSX.Element => (
-                <Providers>
-                    <Display />
-                </Providers>
-            );
-
-            const html: string = renderToString(<Component />);
-
-            expect(html.replace(/<!-- -->/g, "")).toContain("dark-fr");
-        });
-
         it("renders children unchanged with no providers", (): void => {
             const Providers = composeProviders([]);
 
@@ -111,6 +72,68 @@ const defineTestsSSR = (): void => {
             expect(html).toContain(text);
         });
 
+        it("renders with a bare provider with optional props (SSR)", (): void => {
+            const OptionalPassthrough: React.FC<{
+                children: React.ReactNode;
+                label?: string;
+            }> = ({ children }) => <>{children}</>;
+
+            const text = "ssr-optional" as const;
+
+            const Providers = composeProviders([
+                OptionalPassthrough,
+            ]);
+
+            const Component = (): React.JSX.Element => (
+                <Providers>
+                    <span>{text}</span>
+                </Providers>
+            );
+
+            const html: string = renderToString(<Component />);
+
+            expect(html).toContain(text);
+        });
+
+        it("renders provider-fed values with renderToString", (): void => {
+            const Providers = composeProviders([
+                [
+                    ThemeCtx.Provider,
+                    {
+                        value: "dark",
+                    },
+                ],
+                [
+                    I18nCtx.Provider,
+                    {
+                        value: "fr",
+                    },
+                ],
+            ]);
+
+            const Display = (): React.JSX.Element => {
+                const theme: string = React.useContext(ThemeCtx);
+
+                const i18n: string = React.useContext(I18nCtx);
+
+                return (
+                    <span>
+                        {theme}-{i18n}
+                    </span>
+                );
+            };
+
+            const Component = (): React.JSX.Element => (
+                <Providers>
+                    <Display />
+                </Providers>
+            );
+
+            const html: string = renderToString(<Component />);
+
+            expect(html.replace(/<!-- -->/g, "")).toContain("dark-fr");
+        });
+
         it("propagates context through three nested providers", (): void => {
             const Providers = composeProviders([
                 [
@@ -158,6 +181,44 @@ const defineTestsSSR = (): void => {
             const html: string = renderToString(<Component />);
 
             expect(html.replace(/<!-- -->/g, "")).toContain("darkjatrue");
+        });
+
+        it("renders with mixed bare and props entries (SSR)", (): void => {
+            const Passthrough: React.FC<{
+                children: React.ReactNode;
+            }> = ({ children }) => <>{children}</>;
+
+            const Providers = composeProviders([
+                Passthrough,
+                [
+                    ThemeCtx.Provider,
+                    {
+                        value: "dark",
+                    },
+                ],
+            ]);
+
+            const text = "ssr-mixed" as const;
+
+            const Display = (): React.JSX.Element => {
+                const theme: string = React.useContext(ThemeCtx);
+
+                return (
+                    <span>
+                        {theme}-{text}
+                    </span>
+                );
+            };
+
+            const Component = (): React.JSX.Element => (
+                <Providers>
+                    <Display />
+                </Providers>
+            );
+
+            const html: string = renderToString(<Component />);
+
+            expect(html.replace(/<!-- -->/g, "")).toContain("dark-ssr-mixed");
         });
     });
 };

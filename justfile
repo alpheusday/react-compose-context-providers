@@ -42,6 +42,7 @@ typos:
 # Lint code with TypeScript Compiler
 tsc:
     cd ./{{pkg}} && {{tsc}} --noEmit
+    cd ./{{test_helpers}} && {{tsc}} --noEmit
     cd ./{{test_18}} && {{tsc}} --noEmit
     cd ./{{test_19}} && {{tsc}} --noEmit
 

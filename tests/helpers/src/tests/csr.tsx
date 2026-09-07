@@ -1,11 +1,13 @@
 import type { ComposedProviders } from "react-compose-context-providers";
 
+import type { Theme } from "#/contexts";
+
 import { render, screen } from "@testing-library/react";
 import * as React from "react";
 import { composeProviders } from "react-compose-context-providers";
 import { describe, expect, it } from "vitest";
 
-import { AuthCtx, I18nCtx, ThemeCtx } from "../contexts";
+import { AuthCtx, I18nCtx, ThemeCtx } from "#/contexts";
 
 const defineTestsCSR = (): void => {
     describe("composeProviders", (): void => {
@@ -13,6 +15,83 @@ const defineTestsCSR = (): void => {
             const text = "Hello, World!" as const;
 
             const Providers: ComposedProviders = composeProviders([]);
+
+            const Component = (): React.JSX.Element => (
+                <Providers>
+                    <span>{text}</span>
+                </Providers>
+            );
+
+            render(<Component />);
+
+            expect(screen.getByText(text)).toBeDefined();
+        });
+
+        it("renders nothing without crashing when given no children", (): void => {
+            const Providers: ComposedProviders = composeProviders([]);
+
+            const { container } = render(<Providers />);
+
+            expect(container.innerHTML).toBe("");
+        });
+
+        it("accepts a bare provider without array wrapper", (): void => {
+            const Passthrough: React.FC<{
+                children: React.ReactNode;
+            }> = ({ children }) => <>{children}</>;
+
+            const text = "bare" as const;
+
+            const Providers: ComposedProviders = composeProviders([
+                Passthrough,
+            ]);
+
+            const Component = (): React.JSX.Element => (
+                <Providers>
+                    <span>{text}</span>
+                </Providers>
+            );
+
+            render(<Component />);
+
+            expect(screen.getByText(text)).toBeDefined();
+        });
+
+        it("accepts a bare provider with optional props", (): void => {
+            const OptionalPassthrough: React.FC<{
+                children: React.ReactNode;
+                label?: string;
+            }> = ({ children }) => <>{children}</>;
+
+            const text = "optional" as const;
+
+            const Providers: ComposedProviders = composeProviders([
+                OptionalPassthrough,
+            ]);
+
+            const Component = (): React.JSX.Element => (
+                <Providers>
+                    <span>{text}</span>
+                </Providers>
+            );
+
+            render(<Component />);
+
+            expect(screen.getByText(text)).toBeDefined();
+        });
+
+        it("works with a provider that requires no props", (): void => {
+            const Passthrough: React.FC<{
+                children: React.ReactNode;
+            }> = ({ children }) => <>{children}</>;
+
+            const Providers: ComposedProviders = composeProviders([
+                [
+                    Passthrough,
+                ],
+            ]);
+
+            const text = "passthrough" as const;
 
             const Component = (): React.JSX.Element => (
                 <Providers>
@@ -140,28 +219,76 @@ const defineTestsCSR = (): void => {
             expect(screen.getByText("darkjatrue")).toBeDefined();
         });
 
-        it("works with a provider that requires no props", (): void => {
+        it("mixes bare providers with providers that have props", (): void => {
             const Passthrough: React.FC<{
                 children: React.ReactNode;
             }> = ({ children }) => <>{children}</>;
 
             const Providers: ComposedProviders = composeProviders([
+                Passthrough,
                 [
-                    Passthrough,
+                    ThemeCtx.Provider,
+                    {
+                        value: "dark",
+                    },
                 ],
             ]);
 
-            const text = "passthrough" as const;
+            const text = "bare-mixed" as const;
+
+            const Display = (): React.JSX.Element => {
+                const theme: string = React.useContext(ThemeCtx);
+
+                return (
+                    <span>
+                        {theme}-{text}
+                    </span>
+                );
+            };
 
             const Component = (): React.JSX.Element => (
                 <Providers>
-                    <span>{text}</span>
+                    <Display />
                 </Providers>
             );
 
             render(<Component />);
 
-            expect(screen.getByText(text)).toBeDefined();
+            expect(screen.getByText(`dark-${text}`)).toBeDefined();
+        });
+
+        it("accepts a tuple entry with explicitly undefined props", (): void => {
+            const OptionalProvider: React.FC<{
+                children?: React.ReactNode;
+                value?: Theme;
+            }> = ({ children, value }): React.JSX.Element => (
+                <ThemeCtx.Provider value={value ?? "light"}>
+                    {children}
+                </ThemeCtx.Provider>
+            );
+
+            const Providers: ComposedProviders = composeProviders([
+                [
+                    OptionalProvider,
+                    undefined as unknown as Record<string, unknown>,
+                ],
+            ]);
+
+            const Display = (): React.JSX.Element => {
+                const theme: Theme = React.useContext(ThemeCtx);
+
+                return <span>{theme}</span>;
+            };
+
+            const Component = (): React.JSX.Element => (
+                <Providers>
+                    <Display />
+                </Providers>
+            );
+
+            render(<Component />);
+
+            expect(screen.getByText("light")).toBeDefined();
         });
 
         it("passes only the specified props to each provider", () => {
@@ -214,55 +341,41 @@ const defineTestsCSR = (): void => {
             render(<Component />);
 
             expect(screen.getByText("second")).toBeDefined();
-        });
-
-        it("accepts a bare provider without array wrapper", (): void => {
-            const Passthrough: React.FC<{
-                children: React.ReactNode;
-            }> = ({ children }) => <>{children}</>;
-
-            const text = "bare" as const;
-
-            const Providers: ComposedProviders = composeProviders([
-                Passthrough,
-            ]);
-
-            const Component = (): React.JSX.Element => (
-                <Providers>
-                    <span>{text}</span>
-                </Providers>
-            );
-
-            render(<Component />);
-
-            expect(screen.getByText(text)).toBeDefined();
-        });
-
-        it("mixes bare providers with providers that have props", (): void => {
-            const Passthrough: React.FC<{
-                children: React.ReactNode;
-            }> = ({ children }) => <>{children}</>;
-
-            const Providers: ComposedProviders = composeProviders([
-                Passthrough,
+            expect(callLog).toStrictEqual([
                 [
-                    ThemeCtx.Provider,
+                    "read",
+                    "second",
+                ],
+            ]);
+        });
+
+        it("renders the same provider repeated with identical props", (): void => {
+            const Ctx: React.Context<string> =
+                React.createContext<string>("none");
+
+            const Wrapper: React.FC<{
+                value: string;
+            }> = Ctx.Provider;
+
+            const Providers: ComposedProviders = composeProviders([
+                [
+                    Wrapper,
                     {
-                        value: "dark",
+                        value: "same",
+                    },
+                ],
+                [
+                    Wrapper,
+                    {
+                        value: "same",
                     },
                 ],
             ]);
 
-            const text = "bare-mixed" as const;
-
             const Display = (): React.JSX.Element => {
-                const theme: string = React.useContext(ThemeCtx);
+                const value: string = React.useContext(Ctx);
 
-                return (
-                    <span>
-                        {theme}-{text}
-                    </span>
-                );
+                return <span>{value}</span>;
             };
 
             const Component = (): React.JSX.Element => (
@@ -273,30 +386,42 @@ const defineTestsCSR = (): void => {
 
             render(<Component />);
 
-            expect(screen.getByText(`dark-${text}`)).toBeDefined();
+            expect(screen.getByText("same")).toBeDefined();
         });
 
-        it("accepts a bare provider with optional props", (): void => {
-            const OptionalPassthrough: React.FC<{
+        it("reuses the composed component across parent re-renders without remounting", (): void => {
+            let mountCount: number = 0;
+
+            const Passthrough: React.FC<{
                 children: React.ReactNode;
-                label?: string;
             }> = ({ children }) => <>{children}</>;
 
-            const text = "optional" as const;
-
             const Providers: ComposedProviders = composeProviders([
-                OptionalPassthrough,
+                Passthrough,
             ]);
 
-            const Component = (): React.JSX.Element => (
+            const Inner = (): React.JSX.Element => {
+                React.useEffect((): void => {
+                    mountCount += 1;
+                }, []);
+
+                return <span>stable</span>;
+            };
+
+            const Parent = (props: { label: string }): React.JSX.Element => (
                 <Providers>
-                    <span>{text}</span>
+                    <Inner />
+                    <span>{props.label}</span>
                 </Providers>
             );
 
-            render(<Component />);
+            const { rerender } = render(<Parent label="one" />);
 
-            expect(screen.getByText(text)).toBeDefined();
+            rerender(<Parent label="two" />);
+
+            expect(screen.getByText("stable")).toBeDefined();
+            expect(screen.getByText("two")).toBeDefined();
+            expect(mountCount).toBe(1);
         });
     });
 };
