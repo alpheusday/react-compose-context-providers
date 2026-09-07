@@ -8,10 +8,12 @@ It is aimed to avoid the nesting of multiple context providers in a single compo
 
 This repository is a pnpm workspace.
 
-| Path      | Description        |
-| --------- | ------------------ |
-| `package` | The library itself |
-| `test`    | The test           |
+| Path            | Description           |
+| --------------- | --------------------- |
+| `package`       | The library itself    |
+| `tests/helpers` | The test helpers      |
+| `tests/react18` | The test for React 18 |
+| `tests/react19` | The test for React 19 |
 
 Do not introduce circular dependencies.
 
