@@ -46,8 +46,8 @@ catalogs:
       specifier: ^16.3.3
       version: 16.3.3
     happy-dom:
-      specifier: ^20.13.2
-      version: 20.14.0
+      specifier: ^20.14.6
+      version: 20.14.6
     vitest:
       specifier: ^5
       version: 5.0.0
@@ -116,7 +116,7 @@ importers:
         version: 18.0.0(react@18.0.0)
       vitest:
         specifier: catalog:test
-        version: 5.0.0(@types/node@26.4.1)(happy-dom@20.14.0)(vite@8.2.2(@types/node@26.4.1))
+        version: 5.0.0(@types/node@26.4.1)(happy-dom@20.14.6)(vite@8.2.2(@types/node@26.4.1))
     devDependencies:
       '@types/react':
         specifier: catalog:react18
@@ -132,13 +132,13 @@ importers:
         version: link:../helpers
       happy-dom:
         specifier: catalog:test
-        version: 20.14.0
+        version: 20.14.6
       react:
         specifier: catalog:react18
         version: 18.0.0
       vitest:
         specifier: catalog:test
-        version: 5.0.0(@types/node@26.4.1)(happy-dom@20.14.0)(vite@8.2.2(@types/node@26.4.1))
+        version: 5.0.0(@types/node@26.4.1)(happy-dom@20.14.6)(vite@8.2.2(@types/node@26.4.1))
     devDependencies:
       '@testing-library/dom':
         specifier: catalog:test
@@ -163,13 +163,13 @@ importers:
         version: link:../helpers
       happy-dom:
         specifier: catalog:test
-        version: 20.14.0
+        version: 20.14.6
       react:
         specifier: catalog:react19
         version: 19.0.0
       vitest:
         specifier: catalog:test
-        version: 5.0.0(@types/node@26.4.1)(happy-dom@20.14.0)(vite@8.2.2(@types/node@26.4.1))
+        version: 5.0.0(@types/node@26.4.1)(happy-dom@20.14.6)(vite@8.2.2(@types/node@26.4.1))
     devDependencies:
       '@testing-library/dom':
         specifier: catalog:test
@@ -751,8 +751,8 @@ packages:
     resolution: {integrity: sha512-X6fBC0pmImC70gvX2zm56go9hx0MyoGVdG0tUCkg/D+Xnh5TJsOZ7iDbOdI3PvmtrDxnu1YdDufpK2QJX1Meqw==}
     engines: {node: '>=20.20.0'}
 
-  happy-dom@20.14.0:
-    resolution: {integrity: sha512-4bRh1KzRvKDnFNTlLhzT1RZTpkKhQbQDl9j+7GXszWsvuspYdo29k6OHRf4PwiM6oLb8r/pMWeYiJjkfod5AvQ==}
+  happy-dom@20.14.6:
+    resolution: {integrity: sha512-5DDsf4QmEIlRL6NkCv/fxSjYHHkZceL/IaYQdJc2h3G7DRTEai++VTjbfL0LB9geW2VrA3+vrjF3Efx+OTtX0Q==}
     engines: {node: '>=20.0.0'}
 
   hookable@6.1.2:
@@ -1499,7 +1499,7 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  happy-dom@20.14.0:
+  happy-dom@20.14.6:
     dependencies:
       '@types/node': 26.4.1
       '@types/whatwg-mimetype': 3.0.2
@@ -1752,7 +1752,7 @@ snapshots:
       '@types/node': 26.4.1
       fsevents: 2.3.3
 
-  vitest@5.0.0(@types/node@26.4.1)(happy-dom@20.14.0)(vite@8.2.2(@types/node@26.4.1)):
+  vitest@5.0.0(@types/node@26.4.1)(happy-dom@20.14.6)(vite@8.2.2(@types/node@26.4.1)):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/mocker': 5.0.0(vite@8.2.2(@types/node@26.4.1))
@@ -1770,7 +1770,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 26.4.1
-      happy-dom: 20.14.0
+      happy-dom: 20.14.6
     transitivePeerDependencies:
       - msw
 
